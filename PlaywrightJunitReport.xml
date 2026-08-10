@@ -1,0 +1,32 @@
+<testsuites id="" name="" tests="9" failures="0" skipped="0" errors="0" time="32.534833">
+<testsuite name="demoblaze.spec.js" timestamp="2026-08-10T07:49:22.529Z" hostname="chromium" tests="1" failures="0" skipped="0" time="11.445" errors="0">
+<testcase name="test" classname="demoblaze.spec.js" time="11.445">
+</testcase>
+</testsuite>
+<testsuite name="example.spec.js" timestamp="2026-08-10T07:49:22.529Z" hostname="chromium" tests="2" failures="0" skipped="0" time="11.062" errors="0">
+<testcase name="has title" classname="example.spec.js" time="5.098">
+</testcase>
+<testcase name="get started link" classname="example.spec.js" time="5.964">
+</testcase>
+</testsuite>
+<testsuite name="demoblaze.spec.js" timestamp="2026-08-10T07:49:22.529Z" hostname="firefox" tests="1" failures="0" skipped="0" time="13.162" errors="0">
+<testcase name="test" classname="demoblaze.spec.js" time="13.162">
+</testcase>
+</testsuite>
+<testsuite name="example.spec.js" timestamp="2026-08-10T07:49:22.529Z" hostname="firefox" tests="2" failures="0" skipped="0" time="18.894" errors="0">
+<testcase name="has title" classname="example.spec.js" time="12.56">
+</testcase>
+<testcase name="get started link" classname="example.spec.js" time="6.334">
+</testcase>
+</testsuite>
+<testsuite name="demoblaze.spec.js" timestamp="2026-08-10T07:49:22.529Z" hostname="webkit" tests="1" failures="0" skipped="0" time="12.931" errors="0">
+<testcase name="test" classname="demoblaze.spec.js" time="12.931">
+</testcase>
+</testsuite>
+<testsuite name="example.spec.js" timestamp="2026-08-10T07:49:22.529Z" hostname="webkit" tests="2" failures="0" skipped="0" time="5.601" errors="0">
+<testcase name="has title" classname="example.spec.js" time="1.755">
+</testcase>
+<testcase name="get started link" classname="example.spec.js" time="3.846">
+</testcase>
+</testsuite>
+</testsuites>

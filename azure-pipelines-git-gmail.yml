@@ -1,0 +1,79 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  - main
+
+# schedules:
+#   - cron: "*/5 * * * *"  # Schedule to run every 5 minutes
+#     displayName: "Run Every 5 Minutes"
+#     branches:
+#       include:
+#         - main  # Specify the branch you want to trigger the pipeline on
+#     always: true # Ensure the pipeline runs even if there are no code changes
+
+# pool:
+#   vmImage: 'ubuntu-latest'
+pool:
+  name: LocalAgents
+
+steps:
+
+  # Install Node.js
+  - task: UseNode@1
+    displayName: 'Install Node.js'
+    inputs:
+      version: '24.x'
+
+  # Verify Node and npm
+  - script: |
+      node --version
+      npm --version
+    displayName: 'Check Node.js and npm'
+
+  # Install project dependencies
+  - script: npm ci
+    displayName: 'Install dependencies'
+
+  # Install Playwright browsers and Linux dependencies
+  - script: npx playwright install --with-deps
+    displayName: 'Install Playwright browsers'
+
+  # Run Playwright tests
+  # - script: npx playwright test --project=$(browser) --grep=$(tagName)
+  - script: npx playwright test --project=$(browser)
+    displayName: 'Run Playwright tests'
+    env:
+      CI: 'true'
+  
+  - script: node scripts/save-report-to-db.js
+    displayName: 'Save Playwright Report to Database'
+    condition: always()
+    env:
+      DB_HOST: $(DB_HOST)
+      DB_PORT: $(DB_PORT)
+      DB_USER: $(DB_USER)
+      DB_PASSWORD: $(DB_PASSWORD)
+      DB_NAME: $(DB_NAME)
+      BUILD_BUILDID: $(Build.BuildId)
+      BUILD_BUILDNUMBER: $(Build.BuildNumber)
+      BUILD_SOURCEBRANCH: $(Build.SourceBranch)
+      TEST_ENV: 'QA'
+
+  # Publish Playwright HTML report
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Playwright Report'
+    condition: always()
+    inputs:
+      targetPath: 'playwright-report'
+      artifact: 'playwright-HTML-report-$(Build.BuildId)-attempt-$(System.JobAttempt)'
+      publishLocation: pipeline
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/PlaywrightJunitReport.xml'
+      testRunTitle: 'Juint Reporter'
