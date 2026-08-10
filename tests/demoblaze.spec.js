@@ -1,14 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { DemoblazeLoginPage } from "../pages/DemoblazeLoginPage.js";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const testData = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "test-data", "testdata.json"), "utf8")
-);
+import testData from "../test-data/testdata.json";
 
 const validCredentials = {
     username: process.env.DEMOBLAZE_USERNAME || testData.validCredentials.username,
