@@ -64,11 +64,19 @@ steps:
       BUILD_SOURCEBRANCH: $(Build.SourceBranch)
       TEST_ENV: 'QA'
 
-   # Create ZIP
-  - script: |
-      zip -r playwright-report.zip playwright-report
-    displayName: 'Zip Playwright report'
+  # Create the ZIP file before publishing it as an artifact.
+  - script: node scripts/zip-report.js
+    displayName: 'Create Playwright Report ZIP'
     condition: always()
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Playwright Report ZIP'
+    condition: always()
+    inputs:
+      targetPath: 'playwright-report.zip'
+      artifact: 'playwright-report-zip-$(Build.BuildId)'
+      publishLocation: pipeline
+
 
   # Publish Playwright HTML report
   - task: PublishPipelineArtifact@1

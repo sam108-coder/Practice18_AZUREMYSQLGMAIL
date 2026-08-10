@@ -8,7 +8,8 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.2.0"
+    "@types/node": "^26.2.0",
+    "archiver": "^8.0.0"
   },
   "dependencies": {
     "dotenv": "^17.4.2",
