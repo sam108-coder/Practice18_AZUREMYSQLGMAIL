@@ -14,7 +14,7 @@ const pool = mysql.createPool({
 
 async function saveTestExecution(data) {
     const query = `
-        INSERT INTO test_execution
+        INSERT INTO test_execution_gmail
         (
             build_id,
             build_number,
