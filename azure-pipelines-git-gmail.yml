@@ -2,8 +2,7 @@
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
-variables:
-- group: SMTPConfig
+
 
 trigger:
   - main
@@ -68,6 +67,20 @@ steps:
   - script: node scripts/zip-report.js
     displayName: 'Create Playwright Report ZIP'
     condition: always()
+
+  - script: node scripts/send-report-email.js
+    displayName: 'Email Playwright Report'
+    condition: always()
+    env:
+      SMTP_HOST: $(SMTP_HOST)
+      SMTP_PORT: $(SMTP_PORT)
+      SMTP_USER: $(SMTP_USER)
+      SMTP_PASSWORD: $(SMTP_PASSWORD)
+      EMAIL_FROM: $(EMAIL_FROM)
+      CLIENT_EMAIL: $(CLIENT_EMAIL)
+      BUILD_BUILDNUMBER: $(Build.BuildNumber)
+      BUILD_SOURCEBRANCHNAME: $(Build.SourceBranchName)
+      TEST_ENV: 'QA'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish Playwright Report ZIP'
