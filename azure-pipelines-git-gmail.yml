@@ -2,6 +2,8 @@
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
+variables:
+- group: SMTPConfig
 
 trigger:
   - main
@@ -61,6 +63,12 @@ steps:
       BUILD_BUILDNUMBER: $(Build.BuildNumber)
       BUILD_SOURCEBRANCH: $(Build.SourceBranch)
       TEST_ENV: 'QA'
+
+   # Create ZIP
+  - script: |
+      zip -r playwright-report.zip playwright-report
+    displayName: 'Zip Playwright report'
+    condition: always()
 
   # Publish Playwright HTML report
   - task: PublishPipelineArtifact@1
