@@ -1,0 +1,20 @@
+{
+  "validCredentials": {
+    "username": "pavanol",
+    "password": "test@123"
+  },
+  "invalidCredentials": [
+    {
+      "name": "incorrect password",
+      "username": "pavanol",
+      "password": "invalid-password",
+      "expectedMessage": "Wrong password."
+    },
+    {
+      "name": "unknown user",
+      "username": "invalid-user",
+      "password": "invalid-password",
+      "expectedMessage": "User does not exist."
+    }
+  ]
+}

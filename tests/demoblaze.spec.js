@@ -1,20 +1,41 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
+import { DemoblazeLoginPage } from "../pages/DemoblazeLoginPage.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-test('test', async ({ page }) => {
-  await page.goto('https://demoblaze.com/');
-  await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible();
-  await page.getByRole('link', { name: 'Log in' }).click();
-  await page.locator('#loginusername').click();
-  await page.locator('#loginusername').fill('pavanol');
-  await page.locator('#loginpassword').click();
-  await page.locator('#loginpassword').fill('test@123');
-  await page.getByRole('button', { name: 'Log in' }).click();
-  await page.getByRole('link', { name: 'Monitors' }).click();
-  await page.getByRole('link', { name: 'ASUS Full HD' }).click();
-  page.once('dialog', dialog => {
-    console.log(`Dialog message: ${dialog.message()}`);
-    dialog.dismiss().catch(() => {});
-  });
-  await page.getByRole('link', { name: 'Add to cart' }).click();
-  await page.getByRole('link', { name: 'Log out' }).click();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const testData = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "test-data", "testdata.json"), "utf8")
+);
+
+const validCredentials = {
+    username: process.env.DEMOBLAZE_USERNAME || testData.validCredentials.username,
+    password: process.env.DEMOBLAZE_PASSWORD || testData.validCredentials.password
+};
+
+test.describe("Demoblaze login", () => {
+    test("logs in and logs out with valid credentials", async ({ page }) => {
+        const loginPage = new DemoblazeLoginPage(page);
+
+        await loginPage.open();
+        await loginPage.openLoginDialog();
+        await loginPage.login(validCredentials.username, validCredentials.password);
+        await loginPage.expectSuccessfulLogin(validCredentials.username);
+        await loginPage.logout();
+    });
+
+    for (const credentials of testData.invalidCredentials) {
+        test(`does not log in with ${credentials.name}`, async ({ page }) => {
+            const loginPage = new DemoblazeLoginPage(page);
+
+            await loginPage.open();
+            await loginPage.openLoginDialog();
+
+            await expect(
+                loginPage.loginAndGetError(credentials.username, credentials.password)
+            ).resolves.toBe(credentials.expectedMessage);
+        });
+    }
 });

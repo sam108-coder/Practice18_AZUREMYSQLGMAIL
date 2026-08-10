@@ -51,6 +51,8 @@ steps:
     displayName: 'Run Playwright tests'
     env:
       CI: 'true'
+      DEMOBLAZE_USERNAME: $(DEMOBLAZE_USERNAME)
+      DEMOBLAZE_PASSWORD: $(DEMOBLAZE_PASSWORD)
   
   - script: node scripts/save-report-to-db.js
     displayName: 'Save Playwright Report to Database'
