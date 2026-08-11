@@ -1,16 +1,7 @@
-import { test, expect } from "@playwright/test";
-import { DemoblazeLoginPage } from "../pages/DemoblazeLoginPage.js";
-import testData from "../test-data/testdata.json";
-
-const validCredentials = {
-    username: process.env.DEMOBLAZE_USERNAME || testData.validCredentials.username,
-    password: process.env.DEMOBLAZE_PASSWORD || testData.validCredentials.password
-};
+import { test, expect, testData } from "../fixtures/demoblaze.fixture.js";
 
 test.describe("Demoblaze login", () => {
-    test("logs in and logs out with valid credentials", async ({ page }) => {
-        const loginPage = new DemoblazeLoginPage(page);
-
+    test("logs in and logs out with valid credentials", async ({ loginPage, validCredentials }) => {
         await loginPage.open();
         await loginPage.openLoginDialog();
         await loginPage.login(validCredentials.username, validCredentials.password);
@@ -19,9 +10,7 @@ test.describe("Demoblaze login", () => {
     });
 
     for (const credentials of testData.invalidCredentials) {
-        test(`does not log in with ${credentials.name}`, async ({ page }) => {
-            const loginPage = new DemoblazeLoginPage(page);
-
+        test(`does not log in with ${credentials.name}`, async ({ loginPage }) => {
             await loginPage.open();
             await loginPage.openLoginDialog();
 
