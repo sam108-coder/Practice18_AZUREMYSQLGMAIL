@@ -147,6 +147,69 @@ The pipeline is defined in `azure-pipelines-git-gmail.yml` and uses the `LocalAg
 
 Use a dedicated Windows machine or VM that stays online while builds run. Do not install the agent in this repository; Azure DevOps updates and work folders belong in a separate, administrator-protected directory such as `C:\agents`.
 
+#### Option A: Configure an extracted agent
+
+From the agent folder, run:
+
+```powershell
+.\config.cmd
+```
+
+At the prompts, use `https://dev.azure.com/<organization>` for the server URL, select `PAT` authentication, provide your Personal Access Token, choose `Default`, `LocalAgents`, or another pool, enter a unique agent name, and accept `_work` as the work folder.
+
+Start the agent interactively with:
+
+```powershell
+.\run.cmd
+```
+
+#### Option B: Full setup, service, and maintenance commands
+
+Use these commands when you need to extract the downloaded agent package first. Replace the ZIP filename if Azure DevOps supplied a different version.
+
+```powershell
+# Create agent directory and extract the package
+mkdir agent
+cd agent
+Expand-Archive -Path .\vsts-agent-win-x64-5.277.0.zip -DestinationPath .
+
+# Configure the agent interactively
+.\config.cmd
+
+# Run the agent interactively
+.\run.cmd
+```
+
+For an unattended configuration, replace the placeholders and keep the PAT private:
+
+```powershell
+.\config.cmd --unattended `
+  --url https://dev.azure.com/<organization> `
+  --auth pat --token <PAT_TOKEN> `
+  --pool LocalAgents --agent windows-playwright-01 `
+  --work _work
+```
+
+Install and start the agent as a Windows service from an elevated PowerShell window:
+
+```powershell
+.\svc install
+.\svc start
+```
+
+```powershell
+# Stop or uninstall the service
+.\svc stop
+.\svc uninstall
+
+# Remove the agent configuration
+.\config.cmd remove
+
+# Check agent version and run diagnostics
+.\bin\Agent.Listener.exe --version
+.\run.cmd --diag
+```
+
 1. In Azure DevOps, select **Organization settings → Pipelines → Agent pools → Add pool**.
 2. Select **Self-hosted**, name the pool `LocalAgents`, and create it.
 3. Open the new **LocalAgents** pool, select **Agents → New agent**, choose **Windows**, and download the agent ZIP shown by Azure DevOps.
